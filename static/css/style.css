@@ -7,24 +7,28 @@ html, body {
 
 #header {
 	padding: 10px;
-	background: #A62830;
+	background: #0F529B;
 	margin-bottom: 15px;
 }
 
 #header h1 {
 	margin: 0;
+}
+
+#header h1 a {
+	margin: 0;
 	color: #fff;
 	font-size: 18px;
 	font-weight: 300;
+	text-decoration: none;
 }
 
 #filemanager {
-	padding: 10px 20px;
 }
 
 #filemanager > div {
 	border-top: 1px solid #ddd;
-	padding: 10px;
+	padding: 10px 20px;
 }
 
 #filemanager > div:hover {
@@ -44,7 +48,8 @@ html, body {
 }
 
 .thumb {
-	background: #A62830;
+	background: #0F529B;
+	border-radius: 2px;
 	vertical-align: bottom;
 }
 
@@ -101,4 +106,9 @@ html, body {
 	height: 32px;
 	overflow: hidden;
 	opacity: 0;
+}
+
+.muted {
+	margin: 0;
+	color: #ccc;
 }

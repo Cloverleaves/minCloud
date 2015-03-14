@@ -9,7 +9,8 @@
     <body>
         <header>
             <div id="header">
-                <a href="/"><h1>minCloud</h1></a>
+                <h1><a href="/">minCloud</a></h1> 
+                <p class="muted">v.0.0.1-alpha</p>
             </div>
         </header>
 
@@ -17,12 +18,13 @@
             <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
             <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
                 <div class="upload-input">
+                    <input type="hidden" name="path" value="{{ escape(currentdir) }}">
                     <input type="file" name="file" id="upload-input" class="upload-input" multiple>
                 </div>
             </form>
 
             <form action="/mkdir" method="post">
-                <label>New directory</label>
+                <label>Create directory</label>
                 <input type="text" name="name">
             </form>
         </div>
@@ -50,7 +52,7 @@
             {% end %}
 
             {% if len(dirs) + len(files) == 0 %}
-                No files and directories to display!
+                <div>No files and directories to display!</div>
             {% end %}
         </div>
 
@@ -66,9 +68,7 @@
                 type: "POST",
                 url: "/rename",
                 data: data,
-                dataType: 'json',
                 success: function(data) {
-                    //window.location = "/?dir=" + data.new_path;
                     window.location.reload();
                 }
             });

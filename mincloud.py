@@ -9,6 +9,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/mkdir", MkdirHandler),
             (r"/rename", RenameHandler),
             (r"/upload", UploadHandler)
         ]
@@ -39,6 +40,12 @@ class MainHandler(tornado.web.RequestHandler):
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
+class MkdirHandler(tornado.web.RequestHandler):
+    def post(self):
+        path = self.get_argument('path', '')
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
 class RenameHandler(tornado.web.RequestHandler):
     def post(self):
         """Basic renaming for files and folders."""
@@ -47,21 +54,16 @@ class RenameHandler(tornado.web.RequestHandler):
         name = self.get_argument('name', '')
         os.rename(os.path.join(Settings.CLOUD_PATH, path, target), os.path.join(Settings.CLOUD_PATH, path, name))
 
-        obj = { 
-            'new_path': os.path.join(path, name) 
-        }
-        self.write(tornado.escape.json_encode(obj))
-
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         """Upload file(s)."""
-        dirname = self.get_argument('root', '')
+        path = self.get_argument('path', '')
         for i in range(len(self.request.files['file'])):
             fileinfo = self.request.files['file'][i]
-            fh = open(os.path.join(Settings.CLOUD_PATH, dirname, fileinfo['filename']), 'wb')
+            fh = open(os.path.join(Settings.CLOUD_PATH, path, fileinfo['filename']), 'wb')
             fh.write(fileinfo['body'])
         
-        self.redirect("/")
+        self.redirect("/?dir=" + path)
 
 def main():
     applicaton = Application()
