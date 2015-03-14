@@ -19,7 +19,7 @@ html, body {
 }
 
 #filemanager {
-	padding-top: 20px;
+	padding: 10px 20px;
 }
 
 #filemanager > div {
@@ -50,6 +50,7 @@ html, body {
 
 .item-input {
 	padding-left: 5px;
+	padding-bottom: 7px;
 	transition: all 200ms;
 	border: none;
 }
@@ -59,7 +60,20 @@ html, body {
 }
 
 .action {
-	padding: 10px;
+	padding: 10px 20px;
+}
+
+.action > div {
+	float: left;
+}
+
+.label {
+	display: inline-block;
+  	padding: 7px;
+	background-color: #F0F0F0;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+	color: #333;
 }
 
 .upload-input {
@@ -70,6 +84,15 @@ html, body {
 	background-color: #F0F0F0;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+}
+
+#file-upload {
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.upload-input:hover {
+	background-color: #ddd;
 }
 
 .upload-input input {

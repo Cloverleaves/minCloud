@@ -1,6 +1,7 @@
 import Settings
 import tornado.web
 import tornado.httpserver
+import tornado.escape
 
 import os
 
@@ -23,27 +24,33 @@ class Application(tornado.web.Application):
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         """Print dirs and files from current root."""
-        root = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
+        listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
+        parentdir = os.path.split(self.get_argument('dir', ''))[0]
         dirs = []
         files = []
 
-        for item in os.listdir(root):
-            if os.path.isdir(os.path.join(root, item)) == True:
-                dirs.append(item)
+        for item in os.listdir(listroot):
+            if os.path.isdir(os.path.join(listroot, item)) == True:
+                # dirs[Directory name][Relative path to directory]
+                dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
             else:
-                files.append(item)
+                # files[File name][Relative path to file]
+                files.append([item, os.path.join(self.get_argument('dir', ''), item)])
 
-        self.render("index.html", title="minCloud", root=self.get_argument('dir', ''), dirs=dirs, files=files)
+        self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
 class RenameHandler(tornado.web.RequestHandler):
     def post(self):
         """Basic renaming for files and folders."""
-        root = self.get_argument('root', '')
+        path = self.get_argument('path', '')
+        target = self.get_argument('target', '')
         name = self.get_argument('name', '')
-        new_name = self.get_argument('new_name', '')
-        os.rename(os.path.join(Settings.CLOUD_PATH, root, name), os.path.join(Settings.CLOUD_PATH, root, new_name))
-        
-        self.redirect("/")
+        os.rename(os.path.join(Settings.CLOUD_PATH, path, target), os.path.join(Settings.CLOUD_PATH, path, name))
+
+        obj = { 
+            'new_path': os.path.join(path, name) 
+        }
+        self.write(tornado.escape.json_encode(obj))
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):

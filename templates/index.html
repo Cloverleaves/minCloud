@@ -9,62 +9,73 @@
     <body>
         <header>
             <div id="header">
-                <h1>minCloud</h1>
+                <a href="/"><h1>minCloud</h1></a>
             </div>
         </header>
 
         <div class="action">
+            <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
             <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
                 <div class="upload-input">
                     <input type="file" name="file" id="upload-input" class="upload-input" multiple>
                 </div>
             </form>
 
-            Create directory:
             <form action="/mkdir" method="post">
+                <label>New directory</label>
                 <input type="text" name="name">
             </form>
         </div>
 
+        <!-- global -->
+        <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
+
         <div id="filemanager">
-            {% if root != "" %}
-                <div class="dir" data-dir="">...</div>
+            {% if currentdir != "" %}
+                <div class="dir-click" data-target="{{ escape(parentdir) }}">...</div>
             {% end %}
 
             {% for dir in dirs %}
                 <div class="dir">
-                    <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-dir="{{ escape(dir) }}"> 
-                    <input type="text" class="item-input" data-root="{{ escape(root) }}" data-name="{{ escape(dir) }}" value="{{ escape(dir) }}">
+                    <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                    <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
                 </div>
             {% end %}
 
             {% for file in files %}
                 <div class="file">
                     <img class="thumb" src="{{ static_url("assets/file.png") }}">
-                    <input type="text" class="item-input" data-root="{{ escape(root) }}" data-name="{{ escape(file) }}" value="{{ escape(file) }}" autocomplete="off">
+                    <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
                 </div>
+            {% end %}
+
+            {% if len(dirs) + len(files) == 0 %}
+                No files and directories to display!
             {% end %}
         </div>
 
         <script type="text/javascript">
+        // Rename
         $(".item-input").change(function(){
             data = {
-                root: $(this).data("root"),
-                name: $(this).data("name"),
-                new_name: $(this).val()
+                path: $("#currentdir").val(),
+                target: $(this).data("target"),
+                name: $(this).val()
             }
             $.ajax({
                 type: "POST",
                 url: "/rename",
                 data: data,
+                dataType: 'json',
                 success: function(data) {
+                    //window.location = "/?dir=" + data.new_path;
                     window.location.reload();
                 }
             });
         });
 
         $(".dir-click").click(function(){
-            window.location = "/?dir=" + $(this).data("dir");
+            window.location = "/?dir=" + $(this).data("target");
         });
 
         // Auto upload on file select
