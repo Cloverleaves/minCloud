@@ -1,0 +1,81 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	font-family: 'Open Sans', 'Arial', sans-serif;
+	font-size: 13px;
+}
+
+#header {
+	padding: 10px;
+	background: #A62830;
+	margin-bottom: 15px;
+}
+
+#header h1 {
+	margin: 0;
+	color: #fff;
+	font-size: 18px;
+	font-weight: 300;
+}
+
+#filemanager {
+	padding-top: 20px;
+}
+
+#filemanager > div {
+	border-top: 1px solid #ddd;
+	padding: 10px;
+}
+
+#filemanager > div:hover {
+	background: #eee;
+}
+
+#filemanager > div:hover > .item-input {
+	padding: 4px 6px;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+}
+
+#filemanager > .dir {
+}
+
+#filemanager > .file {
+}
+
+.thumb {
+	background: #A62830;
+	vertical-align: bottom;
+}
+
+.item-input {
+	padding-left: 5px;
+	transition: all 200ms;
+	border: none;
+}
+
+.dir-click {
+	cursor: pointer;
+}
+
+.action {
+	padding: 10px;
+}
+
+.upload-input {
+	cursor: pointer;
+	width: 32px;
+	height: 32px;
+	background-image: url('/static/assets/upload.png');
+	background-color: #F0F0F0;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+}
+
+.upload-input input {
+	cursor: pointer;
+	width: 32px;
+	height: 32px;
+	overflow: hidden;
+	opacity: 0;
+}

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ title }}</title>
+        <link rel="stylesheet" type="text/css" href="{{ static_url("css/style.css") }}">
+        <script src="{{ static_url("js/jquery-1.11.2.min.js") }}"></script>
+    </head>
+    <body>
+        <header>
+            <div id="header">
+                <h1>minCloud</h1>
+            </div>
+        </header>
+
+        <div class="action">
+            <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
+                <div class="upload-input">
+                    <input type="file" name="file" id="upload-input" class="upload-input" multiple>
+                </div>
+            </form>
+
+            Create directory:
+            <form action="/mkdir" method="post">
+                <input type="text" name="name">
+            </form>
+        </div>
+
+        <div id="filemanager">
+            {% if root != "" %}
+                <div class="dir" data-dir="">...</div>
+            {% end %}
+
+            {% for dir in dirs %}
+                <div class="dir">
+                    <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-dir="{{ escape(dir) }}"> 
+                    <input type="text" class="item-input" data-root="{{ escape(root) }}" data-name="{{ escape(dir) }}" value="{{ escape(dir) }}">
+                </div>
+            {% end %}
+
+            {% for file in files %}
+                <div class="file">
+                    <img class="thumb" src="{{ static_url("assets/file.png") }}">
+                    <input type="text" class="item-input" data-root="{{ escape(root) }}" data-name="{{ escape(file) }}" value="{{ escape(file) }}" autocomplete="off">
+                </div>
+            {% end %}
+        </div>
+
+        <script type="text/javascript">
+        $(".item-input").change(function(){
+            data = {
+                root: $(this).data("root"),
+                name: $(this).data("name"),
+                new_name: $(this).val()
+            }
+            $.ajax({
+                type: "POST",
+                url: "/rename",
+                data: data,
+                success: function(data) {
+                    window.location.reload();
+                }
+            });
+        });
+
+        $(".dir-click").click(function(){
+            window.location = "/?dir=" + $(this).data("dir");
+        });
+
+        // Auto upload on file select
+        $("#upload-input").change(function() {
+            $("#file-upload").submit();
+        });
+        </script>
+ 
+    </body>
+</html>
