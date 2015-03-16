@@ -43,8 +43,11 @@ class MainHandler(tornado.web.RequestHandler):
 class MkdirHandler(tornado.web.RequestHandler):
     def post(self):
         path = self.get_argument('path', '')
-        if not os.path.exists(ysysyswadirectory):
-            os.makedirs(directory)
+        directory = self.get_argument('directory', '') # New directory name
+        if not os.path.exists(os.path.join(Settings.CLOUD_PATH, path, directory)):
+            os.mkdir(os.path.join(Settings.CLOUD_PATH, path, directory))
+
+        self.redirect("/?dir=" + path)
 
 class RenameHandler(tornado.web.RequestHandler):
     def post(self):

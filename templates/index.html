@@ -25,7 +25,8 @@
 
             <form action="/mkdir" method="post">
                 <label>Create directory</label>
-                <input type="text" name="name">
+                <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+                <input type="text" name="directory">
             </form>
         </div>
 
