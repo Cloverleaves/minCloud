@@ -1,0 +1,22 @@
+{% if currentdir != "" %}
+    <div class="dir-click" data-target="{{ escape(parentdir) }}">...</div>
+{% end %}
+
+{% for dir in dirs %}
+    <div class="dir">
+        <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+        <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+    </div>
+{% end %}
+
+{% for file in files %}
+    <div class="file">
+        <img class="thumb" src="{{ static_url("assets/file.png") }}">
+        <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+        <div class="hidden">Download Delete</div>
+    </div>
+{% end %}
+
+{% if len(dirs) + len(files) == 0 %}
+    <div>No files and directories to display!</div>
+{% end %}

@@ -9,6 +9,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/get", ItemHandler),
             (r"/mkdir", MkdirHandler),
             (r"/rename", RenameHandler),
             (r"/upload", UploadHandler)
@@ -39,6 +40,44 @@ class MainHandler(tornado.web.RequestHandler):
                 files.append([item, os.path.join(self.get_argument('dir', ''), item)])
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
+
+class ItemHandler(tornado.web.RequestHandler):
+    def get(self):
+        listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
+        parentdir = os.path.split(self.get_argument('dir', ''))[0]
+        dirs = []
+        files = []
+
+        for item in os.listdir(listroot):
+            if os.path.isdir(os.path.join(listroot, item)) == True:
+                # dirs[Directory name][Relative path to directory]
+                dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
+            else:
+                # files[File name][Relative path to file]
+                files.append([item, os.path.join(self.get_argument('dir', ''), item)])
+
+        self.render("filemanager.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
+
+        """
+        listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
+        parentdir = os.path.split(self.get_argument('dir', ''))[0]
+
+        # JSON
+        data = {
+            'dirs': {},
+            'files': {}
+        }
+    
+        for item in os.listdir(listroot):
+            if os.path.isdir(os.path.join(listroot, item)) == True:
+                # dirs[Directory name][Relative path to directory]
+                data['dirs'][item] = os.path.join(self.get_argument('dir', ''), item)
+            else:
+                # files[File name][Relative path to file]
+                data['files'][item] = os.path.join(self.get_argument('dir', ''), item)
+
+        self.write(tornado.escape.json_encode(data))
+        """
 
 class MkdirHandler(tornado.web.RequestHandler):
     def post(self):

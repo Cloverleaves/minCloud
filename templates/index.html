@@ -9,7 +9,7 @@
     <body>
         <header>
             <div id="header">
-                <h1><a href="/">minCloud</a></h1> 
+                <h1 class="dir-click" data-target="">minCloud</h1> 
                 <p class="muted">v.0.0.1-alpha</p>
             </div>
         </header>
@@ -49,6 +49,7 @@
                 <div class="file">
                     <img class="thumb" src="{{ static_url("assets/file.png") }}">
                     <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+                    <div class="hidden">Download Delete</div>
                 </div>
             {% end %}
 
@@ -75,8 +76,18 @@
             });
         });
 
-        $(".dir-click").click(function(){
-            window.location = "/?dir=" + $(this).data("target");
+        $('body').on('click', '.dir-click', function(){
+            $.ajax({
+                url: "/get?dir=" + $(this).data("target"),
+                dataType: "html",
+                beforeSend: function(xhr) {
+                    // loader
+                },
+                success:function(data){
+                    $("#filemanager").hide().html(data).fadeIn();
+                }
+            });
+
         });
 
         // Auto upload on file select

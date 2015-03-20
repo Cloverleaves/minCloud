@@ -13,10 +13,6 @@ html, body {
 
 #header h1 {
 	margin: 0;
-}
-
-#header h1 a {
-	margin: 0;
 	color: #fff;
 	font-size: 18px;
 	font-weight: 300;
@@ -35,10 +31,19 @@ html, body {
 	background: #eee;
 }
 
+#filemanager > .file > .hidden {
+	display: inline-block;
+	opacity: 0;
+}
+
 #filemanager > div:hover > .item-input {
 	padding: 4px 6px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+}
+
+#filemanager > .file:hover > .hidden {
+	opacity: 1;
 }
 
 #filemanager > .dir {
