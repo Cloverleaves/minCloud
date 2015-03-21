@@ -70,7 +70,7 @@ table {
 	min-width: 140px;
 }
 
-.file > td > .hidden {
+.item > td > .hidden {
 	display: inline-block;
 	color: #555;
 	opacity: 0;
@@ -78,11 +78,11 @@ table {
 	margin-right: 5px;
 }
 
-.file > td > .hidden a {
+.item > td > .hidden a {
 	color: #444;
 }
 
-.file > td > .hidden a:hover {
+.item > td > .hidden a:hover {
 	color: #111;
 }
 
@@ -93,7 +93,7 @@ tr:hover > td > .item-input {
 	border-radius: 2px;
 }
 
-.file:hover > td > .hidden {
+.item:hover > td > .hidden {
 	opacity: 0.8;
 }
 

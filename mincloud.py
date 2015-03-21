@@ -5,6 +5,7 @@ import tornado.escape
 
 import os
 import time
+import shutil
 import mimetypes
 
 class Application(tornado.web.Application):
@@ -35,7 +36,7 @@ class MainHandler(tornado.web.RequestHandler):
         files = []
 
         for item in os.listdir(listroot):
-            if os.path.isdir(os.path.join(listroot, item)) == True:
+            if os.path.isdir(os.path.join(listroot, item)):
                 # dirs[Directory name][Relative path to directory]
                 dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
             else:
@@ -92,7 +93,11 @@ class DeleteHandler(tornado.web.RequestHandler):
     def post(self):
         path = self.get_argument('path', '')
         target = self.get_argument('target', '')
-        os.remove(os.path.join(Settings.CLOUD_PATH, path, target))
+        item = os.path.join(Settings.CLOUD_PATH, path, target)
+        if os.path.isdir(item):
+            shutil.rmtree(item)
+        else:
+            os.remove(item)
 
 class Helper(object):
     def sizeof_fmt(num, suffix='B'):

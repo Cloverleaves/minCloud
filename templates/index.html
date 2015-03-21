@@ -46,18 +46,24 @@
                 {% end %}
 
                 {% for dir in dirs %}
-                    <tr>
-                        <td colspan="4">
+                    <tr class="item">
+                        <td>
                             <a href="/?dir={{ escape(dir[1]) }}">
                                 <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
                             </a>
                             <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
                         </td>
+                        <td colspan="3">
+                            <div class="hidden">
+                                <img class="action-icon action-remove" src="{{ static_url("assets/remove.svg") }}">
+                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ escape(dir[0]) }}">Delete</a>
+                            </div>
+                        </td>
                     </tr>
                 {% end %}
 
                 {% for file in files %}
-                    <tr class="file">
+                    <tr class="item">
                         <td>
                             <img class="thumb" src="{{ static_url("assets/file.png") }}">
                             <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">

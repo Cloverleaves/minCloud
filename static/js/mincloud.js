@@ -13,13 +13,13 @@ $(".item-input").change(function() {
         data: data,
         success: function(data) {
             //todo: popups/notifications?
-            //window.location.reload();
+            window.location.reload();
         }
     });
 });
 
 $('body').on('click', '.action-remove', function() {
-    if (confirm("Do you really want to delete this file?")) {
+    if (confirm("Do you really want to delete this item?")) {
         data = {
             path: $("#currentdir").val(),
             target: $(this).data("target")
@@ -31,7 +31,7 @@ $('body').on('click', '.action-remove', function() {
             context: $(this),
             success: function(data) {
                 console.log(this);
-                $(this).closest(".file").fadeOut();
+                $(this).closest(".item").fadeOut();
             }
         });
     }
