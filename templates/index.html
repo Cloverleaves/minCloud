@@ -9,7 +9,7 @@
     <body>
         <header>
             <div id="header">
-                <h1 class="action-open" data-target="">minCloud</h1> 
+                <a href="/"><h1>minCloud</h1></a> 
                 <p class="muted">v.0.0.1-alpha</p>
             </div>
         </header>
@@ -27,6 +27,7 @@
                 <form id="mkdir" action="/mkdir" method="post">
                     <input type="hidden" name="path" value="{{ escape(currentdir) }}">
                     <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
+                    <button id="mkdir-submit">Create</button>
                 </form>
             </div>
 
@@ -36,12 +37,14 @@
                 <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
 
                 {% if currentdir != "" %}
-                    <div class="action-open" data-target="{{ escape(parentdir) }}">...</div>
+                    <div><a href="?dir={{ escape(parentdir) }}">...</a></div>
                 {% end %}
 
                 {% for dir in dirs %}
                     <div class="dir">
-                        <img class="action-open thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                        <a href="/?dir={{ escape(dir[1]) }}">
+                            <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                        </a>
                         <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
                     </div>
                 {% end %}
@@ -65,7 +68,7 @@
 
         <script type="text/javascript">
         // Rename
-        $(".item-input").change(function(){
+        $(".item-input").change(function() {
             data = {
                 path: $("#currentdir").val(),
                 target: $(this).data("target"),
@@ -81,20 +84,7 @@
             });
         });
 
-        $('body').on('click', '.action-open', function(){
-            $.ajax({
-                url: "/get?dir=" + $(this).data("target"),
-                dataType: "html",
-                beforeSend: function(xhr) {
-                    // loader
-                },
-                success: function(data) {
-                    $("#content").hide().html(data).fadeIn();
-                }
-            });
-        });
-
-        $('body').on('click', '.action-remove', function(){
+        $('body').on('click', '.action-remove', function() {
             if (confirm("Do you really want to delete this file?")) {
                 data = {
                     path: $("#currentdir").val(),
@@ -114,23 +104,16 @@
         });
 
         // Auto upload on file select
-        $("#upload-input").change(function() {
+        $('body').on('change', '#upload-input', function() {
             $("#file-upload").submit();
         });
 
-        $("#mkdir").click(function(){
-            data = {
-                path: $("#currentdir").val(),
-                name: $(this).value()
-            }
-            $.ajax({
-                type: "POST",
-                url: "/mkdir",
-                data: data,
-                success: function(data) {
+        $('body').on('focus', '#mkdir-input', function() {
+            $("#mkdir-submit").fadeIn();
+        });
 
-                }
-            });
+        $('body').on('blur', '#mkdir-input', function() {
+            $("#mkdir-submit").fadeOut();
         });
         </script>
  

@@ -11,6 +11,7 @@
         <form id="mkdir" action="/mkdir" method="post">
             <input type="hidden" name="path" value="{{ escape(currentdir) }}">
             <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
+            <button id="mkdir-submit">Create</button>
         </form>
     </div>
 
@@ -20,12 +21,14 @@
         <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
 
         {% if currentdir != "" %}
-            <div class="action-open" data-target="{{ escape(parentdir) }}">...</div>
+            <div><a href="?dir={{ escape(parentdir) }}">...</a></div>
         {% end %}
 
         {% for dir in dirs %}
             <div class="dir">
-                <img class="action-open thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                <a href="/?dir={{ escape(dir[1]) }}">
+                    <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                </a>
                 <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
             </div>
         {% end %}

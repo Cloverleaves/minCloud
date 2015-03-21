@@ -108,7 +108,7 @@ class UploadHandler(tornado.web.RequestHandler):
             fh = open(os.path.join(Settings.CLOUD_PATH, path, fileinfo['filename']), 'wb')
             fh.write(fileinfo['body'])
         
-        self.redirect("/get?dir=" + path)
+        self.redirect("/?dir=" + path)
 
 class DownloadHandler(tornado.web.RequestHandler):
     def get(self):

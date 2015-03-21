@@ -5,6 +5,10 @@ html, body {
 	font-size: 13px;
 }
 
+a {
+	text-decoration: none;
+}
+
 #header {
 	padding: 10px;
 	background: #0F529B;
@@ -110,6 +114,20 @@ html, body {
 	padding: 8px 8px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+}
+
+#mkdir-submit {
+	display: none;
+	color: #fff;
+	background: #1CB841;
+	padding: 8px 8px;
+	border: 1px solid #19A73B;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+#mkdir-submit:hover {
+	background: #1BB53F;
 }
 
 .clear {
