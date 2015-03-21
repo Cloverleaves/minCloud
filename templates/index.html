@@ -10,7 +10,7 @@
         <header>
             <div id="header">
                 <a href="/"><h1>minCloud</h1></a> 
-                <p class="muted">v.0.0.1-alpha</p>
+                <p class="muted">v.0.0.2-alpha</p>
             </div>
         </header>
 
@@ -33,89 +33,62 @@
 
             <div class="clear"></div>
 
-            <div id="filemanager">
-                <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
+            <table id="filemanager">
+                <tr>
+                    <th id="filename">Name</th>
+                    <th id="fileaction"></th>
+                    <th id="filesize">Size</th>
+                    <th id="filemodified">Last modified</th>
+                </tr>
 
                 {% if currentdir != "" %}
-                    <div><a href="?dir={{ escape(parentdir) }}">...</a></div>
+                    <tr><td colspan="4"><a href="?dir={{ escape(parentdir) }}">...</a></td></tr>
                 {% end %}
 
                 {% for dir in dirs %}
-                    <div class="dir">
-                        <a href="/?dir={{ escape(dir[1]) }}">
-                            <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
-                        </a>
-                        <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
-                    </div>
+                    <tr>
+                        <td colspan="4">
+                            <a href="/?dir={{ escape(dir[1]) }}">
+                                <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                            </a>
+                            <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+                        </td>
+                    </tr>
                 {% end %}
 
                 {% for file in files %}
-                    <div class="file">
-                        <img class="thumb" src="{{ static_url("assets/file.png") }}">
-                        <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
-                        <div class="hidden">
-                            <a href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}">Download</a> 
-                            <a class="action-remove" data-target="{{ escape(file[0]) }}">Delete</a>
-                        </div>
-                    </div>
+                    <tr class="file">
+                        <td>
+                            <img class="thumb" src="{{ static_url("assets/file.png") }}">
+                            <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+                        </td>
+                        <td>
+                            <div class="hidden">
+                               <a action="action-icon" href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}"><img class="action-icon" src="{{ static_url("assets/download.svg") }}"></a>
+                            <a class="action-text" href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}">Download</a> 
+                            </div>
+                            <div class="hidden">
+                                <img class="action-icon action-remove" src="{{ static_url("assets/remove.svg") }}">
+                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ escape(file[0]) }}">Delete</a>
+                            </div>
+                        </td>
+                        <td>{{ escape(file[2]) }}</td>
+                        <td><div class="filemodified">{{ escape(file[3]) }}</div></td>
+                    </tr>
                 {% end %}
 
                 {% if len(dirs) + len(files) == 0 %}
-                    <div>No files and directories to display!</div>
+                    <tr><td colspan="4">No files and directories to display!</td></tr>
                 {% end %}
+            </table>
+
+            <div id="filemanager">
+                <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
+
+
             </div>
         </div>
 
-        <script type="text/javascript">
-        // Rename
-        $(".item-input").change(function() {
-            data = {
-                path: $("#currentdir").val(),
-                target: $(this).data("target"),
-                name: $(this).val()
-            }
-            $.ajax({
-                type: "POST",
-                url: "/rename",
-                data: data,
-                success: function(data) {
-                    window.location.reload();
-                }
-            });
-        });
-
-        $('body').on('click', '.action-remove', function() {
-            if (confirm("Do you really want to delete this file?")) {
-                data = {
-                    path: $("#currentdir").val(),
-                    target: $(this).data("target")
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "/delete",
-                    data: data,
-                    context: $(this),
-                    success: function(data) {
-                        console.log(this);
-                        $(this).closest(".file").fadeOut();
-                    }
-                });
-            }
-        });
-
-        // Auto upload on file select
-        $('body').on('change', '#upload-input', function() {
-            $("#file-upload").submit();
-        });
-
-        $('body').on('focus', '#mkdir-input', function() {
-            $("#mkdir-submit").fadeIn();
-        });
-
-        $('body').on('blur', '#mkdir-input', function() {
-            $("#mkdir-submit").fadeOut();
-        });
-        </script>
- 
+        <script src="{{ static_url("js/mincloud.js") }}"></script>
     </body>
 </html>

@@ -4,13 +4,13 @@ import tornado.httpserver
 import tornado.escape
 
 import os
+import time
 import mimetypes
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/get", ItemHandler),
             (r"/mkdir", MkdirHandler),
             (r"/rename", RenameHandler),
             (r"/download", DownloadHandler),
@@ -39,48 +39,13 @@ class MainHandler(tornado.web.RequestHandler):
                 # dirs[Directory name][Relative path to directory]
                 dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
             else:
-                # files[File name][Relative path to file]
-                files.append([item, os.path.join(self.get_argument('dir', ''), item)])
+                # files[File name][Relative path to file][Modified on]
+                item_rel_path = os.path.join(self.get_argument('dir', ''), item)
+                item_abs_path = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''), item)
+                (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(item_abs_path)
+                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime)])
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
-
-class ItemHandler(tornado.web.RequestHandler):
-    def get(self):
-        listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
-        parentdir = os.path.split(self.get_argument('dir', ''))[0]
-        dirs = []
-        files = []
-
-        for item in os.listdir(listroot):
-            if os.path.isdir(os.path.join(listroot, item)) == True:
-                # dirs[Directory name][Relative path to directory]
-                dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
-            else:
-                # files[File name][Relative path to file]
-                files.append([item, os.path.join(self.get_argument('dir', ''), item)])
-
-        self.render("filemanager.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
-
-        """
-        listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
-        parentdir = os.path.split(self.get_argument('dir', ''))[0]
-
-        # JSON
-        data = {
-            'dirs': {},
-            'files': {}
-        }
-    
-        for item in os.listdir(listroot):
-            if os.path.isdir(os.path.join(listroot, item)) == True:
-                # dirs[Directory name][Relative path to directory]
-                data['dirs'][item] = os.path.join(self.get_argument('dir', ''), item)
-            else:
-                # files[File name][Relative path to file]
-                data['files'][item] = os.path.join(self.get_argument('dir', ''), item)
-
-        self.write(tornado.escape.json_encode(data))
-        """
 
 class MkdirHandler(tornado.web.RequestHandler):
     def post(self):
@@ -128,6 +93,15 @@ class DeleteHandler(tornado.web.RequestHandler):
         path = self.get_argument('path', '')
         target = self.get_argument('target', '')
         os.remove(os.path.join(Settings.CLOUD_PATH, path, target))
+
+class Helper(object):
+    def sizeof_fmt(num, suffix='B'):
+        """Return human readable size."""
+        for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+            if abs(num) < 1024.0:
+                return "%3.1f%s%s" % (num, unit, suffix)
+            num /= 1024.0
+        return "%.1f%s%s" % (num, 'Yi', suffix)
 
 def main():
     applicaton = Application()

@@ -9,6 +9,11 @@ a {
 	text-decoration: none;
 }
 
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
 #header {
 	padding: 10px;
 	background: #0F529B;
@@ -24,38 +29,72 @@ a {
 }
 
 #filemanager {
+	width: 100%;
 	margin-top: 15px;
 }
 
-#filemanager > div {
+#filemanager tr {
 	border-top: 1px solid #ddd;
-	padding: 10px 20px;
 }
 
-#filemanager > div:hover {
+#filemanager tr th,
+#filemanager tr td {
+	text-align: left;
+}
+
+#filemanager tr:hover {
 	background: #eee;
 }
 
-#filemanager > .file > .hidden {
-	display: inline-block;
-	opacity: 0;
+#filemanager td, #filemanager th {
+	padding: 8px 20px;
 }
 
-#filemanager > div:hover > .item-input {
+#filemanager th {
+	font-weight: normal;
+}
+
+#filename {
+	width: 99999px;
+}
+
+#fileaction {
+	min-width: 200px;
+}
+
+#filesize {
+	min-width: 120px;
+}
+
+#filemodified {
+	min-width: 140px;
+}
+
+.file > td > .hidden {
+	display: inline-block;
+	color: #555;
+	opacity: 0;
+	transition: all 300ms;
+	margin-right: 5px;
+}
+
+.file > td > .hidden a {
+	color: #444;
+}
+
+.file > td > .hidden a:hover {
+	color: #111;
+}
+
+tr:hover > td > .item-input {
 	margin: 0 4px;
 	padding: 4px 6px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
 }
 
-#filemanager > .file:hover > .hidden {
-	opacity: 1;
-}
-
-#filemanager > .dir {
-}
-
-#filemanager > .file {
+.file:hover > td > .hidden {
+	opacity: 0.8;
 }
 
 .thumb {
@@ -150,4 +189,50 @@ a {
 .muted {
 	margin: 0;
 	color: #ccc;
+}
+
+.action-icon {
+	width: 16px;
+	height: 16px;
+	vertical-align: text-bottom;
+}
+
+/* Smaller screens */
+@media screen and (max-width: 900px) {
+	#fileaction {
+		min-width: 90px;
+	}
+
+	#filesize {
+		min-width: 90px;
+	}
+
+	#filemodified {
+		min-width: 100px;
+	}
+
+	.action-text {
+		display: none;
+	}
+}
+
+/* Mobile */
+@media screen and (max-width: 500px) {
+	#fileaction {
+		min-width: 0px;
+	}
+
+	#filemodified {
+		min-width: 0px;
+	}
+
+	.item-input {
+		width: 80px;
+	}
+
+	.thumb {
+		width: 16px;
+		height: 16px;
+		vertical-align: middle;
+	}
 }
