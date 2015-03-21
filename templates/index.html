@@ -9,53 +9,58 @@
     <body>
         <header>
             <div id="header">
-                <h1 class="dir-click" data-target="">minCloud</h1> 
+                <h1 class="action-open" data-target="">minCloud</h1> 
                 <p class="muted">v.0.0.1-alpha</p>
             </div>
         </header>
 
-        <div class="action">
-            <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
-            <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
-                <div class="upload-input">
+        <div id="content">
+            <div class="action">
+                <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
+                <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
+                    <div class="upload-input">
+                        <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+                        <input type="file" name="file" id="upload-input" class="upload-input" multiple>
+                    </div>
+                </form>
+
+                <form id="mkdir" action="/mkdir" method="post">
                     <input type="hidden" name="path" value="{{ escape(currentdir) }}">
-                    <input type="file" name="file" id="upload-input" class="upload-input" multiple>
-                </div>
-            </form>
+                    <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
+                </form>
+            </div>
 
-            <form action="/mkdir" method="post">
-                <label>Create directory</label>
-                <input type="hidden" name="path" value="{{ escape(currentdir) }}">
-                <input type="text" name="directory">
-            </form>
-        </div>
+            <div class="clear"></div>
 
-        <!-- global -->
-        <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
+            <div id="filemanager">
+                <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
 
-        <div id="filemanager">
-            {% if currentdir != "" %}
-                <div class="dir-click" data-target="{{ escape(parentdir) }}">...</div>
-            {% end %}
+                {% if currentdir != "" %}
+                    <div class="action-open" data-target="{{ escape(parentdir) }}">...</div>
+                {% end %}
 
-            {% for dir in dirs %}
-                <div class="dir">
-                    <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
-                    <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
-                </div>
-            {% end %}
+                {% for dir in dirs %}
+                    <div class="dir">
+                        <img class="action-open thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                        <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+                    </div>
+                {% end %}
 
-            {% for file in files %}
-                <div class="file">
-                    <img class="thumb" src="{{ static_url("assets/file.png") }}">
-                    <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
-                    <div class="hidden">Download Delete</div>
-                </div>
-            {% end %}
+                {% for file in files %}
+                    <div class="file">
+                        <img class="thumb" src="{{ static_url("assets/file.png") }}">
+                        <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+                        <div class="hidden">
+                            <a href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}">Download</a> 
+                            <a class="action-remove" data-target="{{ escape(file[0]) }}">Delete</a>
+                        </div>
+                    </div>
+                {% end %}
 
-            {% if len(dirs) + len(files) == 0 %}
-                <div>No files and directories to display!</div>
-            {% end %}
+                {% if len(dirs) + len(files) == 0 %}
+                    <div>No files and directories to display!</div>
+                {% end %}
+            </div>
         </div>
 
         <script type="text/javascript">
@@ -76,23 +81,56 @@
             });
         });
 
-        $('body').on('click', '.dir-click', function(){
+        $('body').on('click', '.action-open', function(){
             $.ajax({
                 url: "/get?dir=" + $(this).data("target"),
                 dataType: "html",
                 beforeSend: function(xhr) {
                     // loader
                 },
-                success:function(data){
-                    $("#filemanager").hide().html(data).fadeIn();
+                success: function(data) {
+                    $("#content").hide().html(data).fadeIn();
                 }
             });
+        });
 
+        $('body').on('click', '.action-remove', function(){
+            if (confirm("Do you really want to delete this file?")) {
+                data = {
+                    path: $("#currentdir").val(),
+                    target: $(this).data("target")
+                }
+                $.ajax({
+                    type: "POST",
+                    url: "/delete",
+                    data: data,
+                    context: $(this),
+                    success: function(data) {
+                        console.log(this);
+                        $(this).closest(".file").fadeOut();
+                    }
+                });
+            }
         });
 
         // Auto upload on file select
         $("#upload-input").change(function() {
             $("#file-upload").submit();
+        });
+
+        $("#mkdir").click(function(){
+            data = {
+                path: $("#currentdir").val(),
+                name: $(this).value()
+            }
+            $.ajax({
+                type: "POST",
+                url: "/mkdir",
+                data: data,
+                success: function(data) {
+
+                }
+            });
         });
         </script>
  

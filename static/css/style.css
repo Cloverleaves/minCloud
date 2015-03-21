@@ -20,6 +20,7 @@ html, body {
 }
 
 #filemanager {
+	margin-top: 15px;
 }
 
 #filemanager > div {
@@ -37,6 +38,7 @@ html, body {
 }
 
 #filemanager > div:hover > .item-input {
+	margin: 0 4px;
 	padding: 4px 6px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
@@ -59,13 +61,13 @@ html, body {
 }
 
 .item-input {
-	padding-left: 5px;
-	padding-bottom: 7px;
+	margin: 0 4px;
+	padding: 4px 6px;
 	transition: all 200ms;
 	border: none;
 }
 
-.dir-click {
+.action-open {
 	cursor: pointer;
 }
 
@@ -84,6 +86,7 @@ html, body {
 	border: 1px solid #ccc;
 	border-radius: 2px;
 	color: #333;
+	cursor: default;
 }
 
 .upload-input {
@@ -96,9 +99,21 @@ html, body {
 	border-radius: 2px;
 }
 
-#file-upload {
+#file-upload,
+#mkdir {
 	display: inline-block;
 	margin-left: 10px;
+	float: left;
+}
+
+#mkdir-input {
+	padding: 8px 8px;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+}
+
+.clear {
+	clear: both;
 }
 
 .upload-input:hover {
@@ -111,6 +126,7 @@ html, body {
 	height: 32px;
 	overflow: hidden;
 	opacity: 0;
+	font-size: 0;
 }
 
 .muted {

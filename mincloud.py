@@ -4,6 +4,7 @@ import tornado.httpserver
 import tornado.escape
 
 import os
+import mimetypes
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -12,6 +13,8 @@ class Application(tornado.web.Application):
             (r"/get", ItemHandler),
             (r"/mkdir", MkdirHandler),
             (r"/rename", RenameHandler),
+            (r"/download", DownloadHandler),
+            (r"/delete", DeleteHandler),
             (r"/upload", UploadHandler)
         ]
         settings = {
@@ -105,7 +108,26 @@ class UploadHandler(tornado.web.RequestHandler):
             fh = open(os.path.join(Settings.CLOUD_PATH, path, fileinfo['filename']), 'wb')
             fh.write(fileinfo['body'])
         
-        self.redirect("/?dir=" + path)
+        self.redirect("/get?dir=" + path)
+
+class DownloadHandler(tornado.web.RequestHandler):
+    def get(self):
+        """Download file by get method."""
+        path = self.get_argument('path', '')
+        target = self.get_argument('target', '')
+
+        content_type = mimetypes.guess_type(target)
+        file = open(os.path.join(Settings.CLOUD_PATH, path, target) , 'r')
+        self.set_header('Content-Type', content_type[0] if content_type[0] is not None else 'text/plain') # Fix for invalid mime-types
+        self.set_header('Content-Disposition', 'attachment; filename=' + target + '')
+        self.write(file.read())
+        
+
+class DeleteHandler(tornado.web.RequestHandler):
+    def post(self):
+        path = self.get_argument('path', '')
+        target = self.get_argument('target', '')
+        os.remove(os.path.join(Settings.CLOUD_PATH, path, target))
 
 def main():
     applicaton = Application()

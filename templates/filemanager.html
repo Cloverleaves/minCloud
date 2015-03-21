@@ -1,22 +1,48 @@
-{% if currentdir != "" %}
-    <div class="dir-click" data-target="{{ escape(parentdir) }}">...</div>
-{% end %}
+<div id="content">
+    <div class="action">
+        <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
+        <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
+            <div class="upload-input">
+                <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+                <input type="file" name="file" id="upload-input" class="upload-input" multiple>
+            </div>
+        </form>
 
-{% for dir in dirs %}
-    <div class="dir">
-        <img class="dir-click thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
-        <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+        <form id="mkdir" action="/mkdir" method="post">
+            <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+            <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
+        </form>
     </div>
-{% end %}
 
-{% for file in files %}
-    <div class="file">
-        <img class="thumb" src="{{ static_url("assets/file.png") }}">
-        <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
-        <div class="hidden">Download Delete</div>
+    <div class="clear"></div>
+    
+    <div id="filemanager">
+        <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
+
+        {% if currentdir != "" %}
+            <div class="action-open" data-target="{{ escape(parentdir) }}">...</div>
+        {% end %}
+
+        {% for dir in dirs %}
+            <div class="dir">
+                <img class="action-open thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+            </div>
+        {% end %}
+
+        {% for file in files %}
+            <div class="file">
+                <img class="thumb" src="{{ static_url("assets/file.png") }}">
+                <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+                <div class="hidden">
+                    <a href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}">Download</a> 
+                    <a class="action-remove" data-target="{{ escape(file[0]) }}">Delete</a>
+                </div>
+            </div>
+        {% end %}
+
+        {% if len(dirs) + len(files) == 0 %}
+            <div>No files and directories to display!</div>
+        {% end %}
     </div>
-{% end %}
-
-{% if len(dirs) + len(files) == 0 %}
-    <div>No files and directories to display!</div>
-{% end %}
+</div>
