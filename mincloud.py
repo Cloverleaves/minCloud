@@ -5,6 +5,7 @@ import tornado.escape
 
 import os
 import time
+import json
 import shutil
 import mimetypes
 
@@ -32,6 +33,7 @@ class MainHandler(tornado.web.RequestHandler):
         """Print dirs and files from current root."""
         listroot = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''))
         parentdir = os.path.split(self.get_argument('dir', ''))[0]
+        
         dirs = []
         files = []
 
@@ -40,11 +42,11 @@ class MainHandler(tornado.web.RequestHandler):
                 # dirs[Directory name][Relative path to directory]
                 dirs.append([item, os.path.join(self.get_argument('dir', ''), item)])
             else:
-                # files[File name][Relative path to file][Modified on]
+                # files[File name][Relative path to file][Size][Modified on][Extension]
                 item_rel_path = os.path.join(self.get_argument('dir', ''), item)
                 item_abs_path = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''), item)
-                (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(item_abs_path)
-                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime)])
+                (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(item_abs_path) # todo: deeper usage
+                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime), Helper.def_extension(item_rel_path.split(os.extsep, 1))])
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
@@ -100,6 +102,26 @@ class DeleteHandler(tornado.web.RequestHandler):
             os.remove(item)
 
 class Helper(object):
+    def def_extension(extension):
+        """Determine if particular icon is available."""
+        icon = "undefined"
+        if len(extension) == 2:
+            ext = extension[1].lower()
+            if ext in ['txt', 'doc']:
+                icon = "doc"
+            elif ext in ['bmp', 'eps', 'gif', 'jpg', 'jpeg', 'png', 'svg']:
+                icon = "image"
+            elif ext in ['flac', 'm4a', 'mp3', 'ogg', 'wav', 'wma']:
+                icon = "music"
+            elif ext in ['mp4', 'webm']:
+                icon = "mov"
+            elif ext in ['7z', 'rar', 'tar.gz', 'zip']:
+                icon = "archive"
+            elif ext in ['pdf']:
+                icon = "pdf"
+
+        return icon
+
     def sizeof_fmt(num, suffix='B'):
         """Return human readable size."""
         for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:

@@ -9,8 +9,8 @@
     <body>
         <header>
             <div id="header">
-                <a href="/"><h1>minCloud</h1></a> 
-                <p class="muted">v.0.0.2-alpha</p>
+                <img class="project-logo" src="{{ static_url("assets/cloud.svg") }}"><a class="project-title" href="/"><h1>minCloud</h1></a> 
+               
             </div>
         </header>
 
@@ -42,14 +42,14 @@
                 </tr>
 
                 {% if currentdir != "" %}
-                    <tr><td colspan="4"><a href="?dir={{ escape(parentdir) }}">...</a></td></tr>
+                    <tr><td colspan="4"><a href="?dir={{ escape(parentdir) }}">.....</a></td></tr>
                 {% end %}
 
                 {% for dir in dirs %}
                     <tr class="item">
                         <td>
                             <a href="/?dir={{ escape(dir[1]) }}">
-                                <img class="thumb" src="{{ static_url("assets/folder.png") }}" data-target="{{ escape(dir[1]) }}"> 
+                                <img class="thumb" src="{{ static_url("assets/folder.svg") }}" data-target="{{ escape(dir[1]) }}"> 
                             </a>
                             <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
                         </td>
@@ -65,7 +65,7 @@
                 {% for file in files %}
                     <tr class="item">
                         <td>
-                            <img class="thumb" src="{{ static_url("assets/file.png") }}">
+                            <img class="thumb" src="/static/assets/{{ file[4] }}.png">
                             <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
                         </td>
                         <td>
@@ -94,6 +94,10 @@
 
             </div>
         </div>
+
+        <footer class="footer">
+            <p class="muted">v.0.0.2-alpha</p>
+        </footer>
 
         <script src="{{ static_url("js/mincloud.js") }}"></script>
     </body>
