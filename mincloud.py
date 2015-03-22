@@ -46,7 +46,7 @@ class MainHandler(tornado.web.RequestHandler):
                 item_rel_path = os.path.join(self.get_argument('dir', ''), item)
                 item_abs_path = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''), item)
                 (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(item_abs_path) # todo: deeper usage
-                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime), Helper.def_extension(item_rel_path.split(os.extsep, 1))])
+                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime), Helper.def_extension(os.path.splitext(item_rel_path))])
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
@@ -107,17 +107,17 @@ class Helper(object):
         icon = "undefined"
         if len(extension) == 2:
             ext = extension[1].lower()
-            if ext in ['txt', 'doc']:
+            if ext in ['.txt', '.doc']:
                 icon = "doc"
-            elif ext in ['bmp', 'eps', 'gif', 'jpg', 'jpeg', 'png', 'svg']:
+            elif ext in ['.bmp', '.eps', '.gif', '.jpg', '.jpeg', '.png', '.svg']:
                 icon = "image"
-            elif ext in ['flac', 'm4a', 'mp3', 'ogg', 'wav', 'wma']:
+            elif ext in ['.flac', '.m4a', '.mp3', '.ogg', '.wav', '.wma']:
                 icon = "music"
-            elif ext in ['mp4', 'webm']:
+            elif ext in ['.mp4', '.webm']:
                 icon = "mov"
-            elif ext in ['7z', 'rar', 'tar.gz', 'zip']:
+            elif ext in ['.7z', '.rar', '.tar.gz', '.zip']:
                 icon = "archive"
-            elif ext in ['pdf']:
+            elif ext in ['.pdf']:
                 icon = "pdf"
 
         return icon
