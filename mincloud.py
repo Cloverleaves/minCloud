@@ -4,6 +4,7 @@ import tornado.httpserver
 import tornado.escape
 
 import os
+import re
 import time
 import json
 import shutil
@@ -17,7 +18,8 @@ class Application(tornado.web.Application):
             (r"/rename", RenameHandler),
             (r"/download", DownloadHandler),
             (r"/delete", DeleteHandler),
-            (r"/upload", UploadHandler)
+            (r"/upload", UploadHandler),
+            (r"/view", ViewHandler)
         ]
         settings = {
             "template_path": Settings.TEMPLATE_PATH,
@@ -50,14 +52,28 @@ class MainHandler(tornado.web.RequestHandler):
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
+class ViewHandler(tornado.web.RequestHandler):
+    def get(self):
+        """Print out the given item."""
+        target = self.get_argument('target', '')
+        content_type = mimetypes.guess_type(target)
+        file = os.path.join(Settings.CLOUD_PATH, target)
+        self.set_header('Content-Type', content_type[0] if content_type[0] is not None else 'text/plain') # Fix for invalid mime-types
+        self.write(open(file, 'rb').read())
+
 class MkdirHandler(tornado.web.RequestHandler):
     def post(self):
         path = self.get_argument('path', '')
         directory = self.get_argument('directory', '') # New directory name
-        if not os.path.exists(os.path.join(Settings.CLOUD_PATH, path, directory)):
-            os.mkdir(os.path.join(Settings.CLOUD_PATH, path, directory))
+        
+        # invalid characters: '\', '/', '"', '<', '>'
+        if re.search('(\\\\|/|"|%22|<|>)', directory):
+            print("Invalid dirname") # todo: notification
+        else:
+            if not os.path.exists(os.path.join(Settings.CLOUD_PATH, path, directory)):
+                os.mkdir(os.path.join(Settings.CLOUD_PATH, path, directory))
 
-        self.redirect("/?dir=" + path)
+        self.redirect("/?dir=" + tornado.escape.url_escape(path))
 
 class RenameHandler(tornado.web.RequestHandler):
     def post(self):
@@ -65,18 +81,29 @@ class RenameHandler(tornado.web.RequestHandler):
         path = self.get_argument('path', '')
         target = self.get_argument('target', '')
         name = self.get_argument('name', '')
-        os.rename(os.path.join(Settings.CLOUD_PATH, path, target), os.path.join(Settings.CLOUD_PATH, path, name))
+        
+        # invalid characters: '\', '/', '"', '<', '>'
+        if re.search('(\\\\|/|"|%22|<|>)', name):
+            print("Invalid filename") # todo: notification
+        else:
+            os.rename(os.path.join(Settings.CLOUD_PATH, path, target), os.path.join(Settings.CLOUD_PATH, path, name))
 
 class UploadHandler(tornado.web.RequestHandler):
     def post(self):
         """Upload file(s)."""
         path = self.get_argument('path', '')
+
         for i in range(len(self.request.files['file'])):
             fileinfo = self.request.files['file'][i]
-            fh = open(os.path.join(Settings.CLOUD_PATH, path, fileinfo['filename']), 'wb')
-            fh.write(fileinfo['body'])
+
+            # invalid characters: '\', '/', '"', '<', '>'
+            if re.search('(\\\\|/|"|%22|<|>)', fileinfo['filename']):
+                print("Invalid filename") # todo: notification
+            else:
+                fh = open(os.path.join(Settings.CLOUD_PATH, path, fileinfo['filename']), 'wb')
+                fh.write(fileinfo['body'])
         
-        self.redirect("/?dir=" + path)
+        self.redirect("/?dir=" + tornado.escape.url_escape(path))
 
 class DownloadHandler(tornado.web.RequestHandler):
     def get(self):
@@ -85,7 +112,7 @@ class DownloadHandler(tornado.web.RequestHandler):
         target = self.get_argument('target', '')
 
         content_type = mimetypes.guess_type(target)
-        file = open(os.path.join(Settings.CLOUD_PATH, path, target) , 'r')
+        file = open(os.path.join(Settings.CLOUD_PATH, path, target) , 'rb')
         self.set_header('Content-Type', content_type[0] if content_type[0] is not None else 'text/plain') # Fix for invalid mime-types
         self.set_header('Content-Disposition', 'attachment; filename=' + target + '')
         self.write(file.read())

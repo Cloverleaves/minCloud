@@ -16,16 +16,16 @@
 
         <div id="content">
             <div class="action">
-                <div class="label">cloudstore/<strong>{{ escape(currentdir) }}</strong></div>
+                <div class="label">cloudstore/<strong>{{ currentdir }}</strong></div>
                 <form id="file-upload" action="/upload" method="post" enctype="multipart/form-data">
                     <div class="upload-input">
-                        <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+                        <input type="hidden" name="path" value="{{ currentdir }}">
                         <input type="file" name="file" id="upload-input" class="upload-input" multiple>
                     </div>
                 </form>
 
                 <form id="mkdir" action="/mkdir" method="post">
-                    <input type="hidden" name="path" value="{{ escape(currentdir) }}">
+                    <input type="hidden" name="path" value="{{ currentdir }}">
                     <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
                     <button id="mkdir-submit">Create</button>
                 </form>
@@ -42,21 +42,21 @@
                 </tr>
 
                 {% if currentdir != "" %}
-                    <tr><td colspan="4"><a href="?dir={{ escape(parentdir) }}">.....</a></td></tr>
+                    <tr><td colspan="4"><a href="?dir={{ url_escape(parentdir) }}">.....</a></td></tr>
                 {% end %}
 
                 {% for dir in dirs %}
                     <tr class="item">
                         <td>
-                            <a href="/?dir={{ escape(dir[1]) }}">
-                                <img class="thumb" src="{{ static_url("assets/folder.svg") }}" data-target="{{ escape(dir[1]) }}"> 
+                            <a href="/?dir={{ url_escape(dir[1]) }}">
+                                <img class="thumb" src="{{ static_url("assets/folder.svg") }}"> 
                             </a>
-                            <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ escape(dir[0]) }}" autocomplete="off">
+                            <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ dir[0] }}" autocomplete="off">
                         </td>
                         <td colspan="3">
                             <div class="hidden">
                                 <img class="action-icon action-remove" src="{{ static_url("assets/remove.svg") }}">
-                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ escape(dir[0]) }}">Delete</a>
+                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ dir[0] }}">Delete</a>
                             </div>
                         </td>
                     </tr>
@@ -65,21 +65,21 @@
                 {% for file in files %}
                     <tr class="item">
                         <td>
-                            <img class="thumb" src="/static/assets/{{ file[4] }}.png">
-                            <input type="text" class="item-input" data-target="{{ escape(file[0]) }}" value="{{ escape(file[0]) }}" autocomplete="off">
+                            <a target="_blank" href="/view?target={{ url_escape(file[1]) }}"><img class="thumb" src="/static/assets/{{ file[4] }}.png"></a>
+                            <input type="text" class="item-input" data-target="{{ file[0] }}" value="{{ file[0] }}" autocomplete="off">
                         </td>
                         <td>
                             <div class="hidden">
-                               <a action="action-icon" href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}"><img class="action-icon" src="{{ static_url("assets/download.svg") }}"></a>
-                            <a class="action-text" href="/download?path={{ escape(currentdir) }}&target={{ escape(file[0]) }}">Download</a> 
+                               <a action="action-icon" href="/download?path={{ url_escape(currentdir) }}&target={{ url_escape(file[0]) }}"><img class="action-icon" src="{{ static_url("assets/download.svg") }}"></a>
+                               <a class="action-text" href="/download?path={{ url_escape(currentdir) }}&target={{ url_escape(file[0]) }}">Download</a>
                             </div>
                             <div class="hidden">
                                 <img class="action-icon action-remove" src="{{ static_url("assets/remove.svg") }}">
-                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ escape(file[0]) }}">Delete</a>
+                                <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ file[0] }}">Delete</a>
                             </div>
                         </td>
-                        <td>{{ escape(file[2]) }}</td>
-                        <td><div class="filemodified">{{ escape(file[3]) }}</div></td>
+                        <td>{{ file[2] }}</td>
+                        <td><div class="filemodified">{{ file[3] }}</div></td>
                     </tr>
                 {% end %}
 
@@ -88,11 +88,7 @@
                 {% end %}
             </table>
 
-            <div id="filemanager">
-                <input type="hidden" id="currentdir" value="{{ escape(currentdir) }}">
-
-
-            </div>
+            <input type="hidden" id="currentdir" value="{{ currentdir }}">
         </div>
 
         <footer class="footer">
