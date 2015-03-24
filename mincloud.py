@@ -1,14 +1,16 @@
-import Settings
+#!/usr/bin/python3
+import os
+import re
+import time
+import shutil
+import mimetypes
+
 import tornado.web
 import tornado.httpserver
 import tornado.escape
 
-import os
-import re
-import time
-import json
-import shutil
-import mimetypes
+from Settings import Settings
+from Helper import Helper
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -48,7 +50,8 @@ class MainHandler(tornado.web.RequestHandler):
                 item_rel_path = os.path.join(self.get_argument('dir', ''), item)
                 item_abs_path = os.path.join(Settings.CLOUD_PATH, self.get_argument('dir', ''), item)
                 (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(item_abs_path) # todo: deeper usage
-                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), str(mtime), Helper.def_extension(os.path.splitext(item_rel_path))])
+
+                files.append([item, item_rel_path, str(Helper.sizeof_fmt(size)), Helper.def_date(mtime), Helper.def_extension(os.path.splitext(item_rel_path))])
 
         self.render("index.html", title="minCloud", parentdir=parentdir, currentdir=self.get_argument('dir', ''), dirs=dirs, files=files)
 
@@ -128,35 +131,6 @@ class DeleteHandler(tornado.web.RequestHandler):
         else:
             os.remove(item)
 
-class Helper(object):
-    def def_extension(extension):
-        """Determine if particular icon is available."""
-        icon = "undefined"
-        if len(extension) == 2:
-            ext = extension[1].lower()
-            if ext in ['.txt', '.doc']:
-                icon = "doc"
-            elif ext in ['.bmp', '.eps', '.gif', '.jpg', '.jpeg', '.png', '.svg']:
-                icon = "image"
-            elif ext in ['.flac', '.m4a', '.mp3', '.ogg', '.wav', '.wma']:
-                icon = "music"
-            elif ext in ['.mp4', '.webm']:
-                icon = "mov"
-            elif ext in ['.7z', '.rar', '.tar.gz', '.zip']:
-                icon = "archive"
-            elif ext in ['.pdf']:
-                icon = "pdf"
-
-        return icon
-
-    def sizeof_fmt(num, suffix='B'):
-        """Return human readable size."""
-        for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
-            if abs(num) < 1024.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
-            num /= 1024.0
-        return "%.1f%s%s" % (num, 'Yi', suffix)
-
 def main():
     applicaton = Application()
     http_server = tornado.httpserver.HTTPServer(applicaton)
@@ -166,3 +140,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
