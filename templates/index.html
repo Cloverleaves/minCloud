@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{{ title }}</title>
         <link rel="stylesheet" type="text/css" href="{{ static_url("css/style.css") }}">
         <script src="{{ static_url("js/jquery-1.11.2.min.js") }}"></script>
@@ -53,12 +54,14 @@
                             </a>
                             <input type="text" class="item-input" data-target="{{ dir[0] }}" value="{{ dir[0] }}" autocomplete="off">
                         </td>
-                        <td colspan="3">
+                        <td>
                             <div class="hidden">
                                 <img class="action-icon action-remove" src="{{ static_url("assets/remove.svg") }}">
                                 <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ dir[0] }}">Delete</a>
                             </div>
                         </td>
+                        <td class="filesize"></td>
+                        <td></td>
                     </tr>
                 {% end %}
 
@@ -78,7 +81,7 @@
                                 <a href="javascript:void(0)" class="action-text action-remove" data-target="{{ file[0] }}">Delete</a>
                             </div>
                         </td>
-                        <td>{{ file[2] }}</td>
+                        <td class="filesize">{{ file[2] }}</td>
                         <td><div class="filemodified">{{ file[3] }}</div></td>
                     </tr>
                 {% end %}

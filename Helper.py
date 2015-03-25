@@ -59,7 +59,7 @@ class Helper(object):
                 icon = "music"
             elif ext in ['.avi', '.flv', '.m4v', '.mov', '.mp4', '.mpg', '.swf', '.webm', '.wmv']:
                 icon = "mov"
-            elif ext in ['.7z', '.rar', '.tar.gz', '.zip']:
+            elif ext in ['.7z', '.rar', '.tar', '.tar.bz2', '.tar.gz', 'tar.xz', '.tar.z' , '.zip']:
                 icon = "archive"
             elif ext in ['.pdf']:
                 icon = "pdf"

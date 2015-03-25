@@ -16,19 +16,23 @@ table {
 
 /* Header */
 #header {
-	padding: 10px;
 	background: #0F529B;
 	margin-bottom: 15px;
+	width: 100%;
 }
 
 #header h1 {
 	margin: 0;
+	padding: 10px 10px 10px 4px;
 	color: #fff;
 	font-size: 18px;
 	font-weight: 300;
 	text-decoration: none;
 }
 
+#header .project-logo {
+	padding: 10px 0 10px 10px;
+}
 
 .project-logo {
 	display: inline-block;
@@ -44,8 +48,10 @@ table {
 }
 
 /* Content */
+#content {
+}
+
 #filemanager {
-	width: 100%;
 	margin-top: 15px;
 }
 
@@ -58,7 +64,7 @@ table {
 	text-align: left;
 }
 
-#filemanager tr:hover {
+#filemanager tr:hover, #filemanager tr:focus {
 	background: #eee;
 }
 
@@ -226,6 +232,10 @@ tr:hover > td > .item-input {
 
 /* Smaller screens */
 @media screen and (max-width: 900px) {
+	.item > td > .hidden {
+		opacity: 0.8;
+	}
+
 	#fileaction {
 		min-width: 90px;
 	}
@@ -243,10 +253,14 @@ tr:hover > td > .item-input {
 	}
 }
 
-/* Mobile */
-@media screen and (max-width: 500px) {
+/* Probably mobile devices */
+@media screen and (max-width: 660px) {
 	#fileaction {
-		min-width: 0px;
+		min-width: 60px;
+	}
+
+	#filesize, .filesize {
+		display: none;
 	}
 
 	#filemodified {
@@ -254,12 +268,12 @@ tr:hover > td > .item-input {
 	}
 
 	.item-input {
-		width: 80px;
+		width: 90px;
 	}
 
 	.thumb {
 		width: 16px;
-		height: 16px;
+		height: 22px;
 		vertical-align: middle;
 	}
 }
