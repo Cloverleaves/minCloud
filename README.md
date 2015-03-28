@@ -16,10 +16,15 @@ Settings are stored in ```config.ini```.
 
 ```
 [server]
-port = yourport
+port = your_port
 
 [path]
 store = path/to/storage
+
+[auth]
+key = generated_hash_key
+username = admin_username
+password = admin_password
 ```
 The default port is set to ```9999``` and the default storage path is set to the ```cloudstore``` folder (located in the same directory as minCloud).
 
