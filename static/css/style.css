@@ -3,6 +3,7 @@ html, body {
 	margin: 0;
 	font-family: 'Open Sans', 'Arial', sans-serif;
 	font-size: 13px;
+	background: #f0f0f0;
 }
 
 a {
@@ -12,6 +13,10 @@ a {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+
+textarea:focus, input:focus{
+    outline: 0;
 }
 
 /* Header */
@@ -45,6 +50,49 @@ table {
 .project-title {
 	display: inline-block;
 	margin-left: 5px;
+}
+
+.logout {
+	float: right;
+	padding: 10px;
+	color: #fff;
+	font-size: 14px;
+	text-decoration: underline;
+}
+
+.logout:hover {
+	text-decoration: none;
+}
+
+/* Login */
+.login-bg {
+	background: #f0f0f0;
+}
+
+#login {
+	position: absolute;
+	top: 14%;
+	left: 50%;
+	margin-left: -90px;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+#login > div {
+	margin-bottom: 3px;
+}
+
+#login > div > h2 {
+	margin: 0;
+	padding: 0;
+	color: #333;
+}
+
+#login > div > input {
+	width: 164px;
+	padding: 4px 6px;
+	border: 1px solid #ccc;
+	border-radius: 2px;
 }
 
 /* Content */
@@ -113,6 +161,7 @@ tr:hover > td > .item-input {
 	padding: 4px 6px;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+	background: #fff;
 }
 
 .item:hover > td > .hidden {
@@ -132,6 +181,7 @@ tr:hover > td > .item-input {
 	padding: 4px 6px;
 	transition: all 200ms;
 	border: none;
+	background: #f0f0f0;
 }
 
 .action-open {
@@ -149,7 +199,7 @@ tr:hover > td > .item-input {
 .label {
 	display: inline-block;
   	padding: 7px;
-	background-color: #F0F0F0;
+	background-color: #fff;
 	border: 1px solid #ccc;
 	border-radius: 2px;
 	color: #333;
@@ -164,7 +214,7 @@ tr:hover > td > .item-input {
 	background-size: 14px 14px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
-	background-color: #F0F0F0;
+	background-color: #fff;
 	border: 1px solid #ccc;
 	border-radius: 2px;
 }
@@ -182,26 +232,12 @@ tr:hover > td > .item-input {
 	border-radius: 2px;
 }
 
-#mkdir-submit {
-	display: none;
-	color: #fff;
-	background: #1CB841;
-	padding: 8px 8px;
-	border: 1px solid #19A73B;
-	border-radius: 2px;
-	cursor: pointer;
-}
-
-#mkdir-submit:hover {
-	background: #1BB53F;
-}
-
 .clear {
 	clear: both;
 }
 
 .upload-input:hover {
-	background-color: #ddd;
+	background-color: #f1f1f1;
 }
 
 .upload-input input {
@@ -222,6 +258,24 @@ tr:hover > td > .item-input {
 /* Footer */
 .footer {
 	padding: 10px 20px;
+}
+
+/* Buttons */
+.btn-success {
+	color: #fff;
+	background: #1CB841;
+	padding: 8px 8px;
+	border: 1px solid #19A73B;
+	border-radius: 2px;
+	cursor: pointer;
+}
+
+.btn-success:hover {
+	background: #1BB53F;
+}
+
+#mkdir-submit {
+	display: none;
 }
 
 /* Misc */

@@ -11,7 +11,7 @@
         <header>
             <div id="header">
                 <img class="project-logo" src="{{ static_url("assets/cloud.svg") }}"><a class="project-title" href="/"><h1>minCloud</h1></a> 
-               
+                <a class="logout" href="/logout">Logout</a>
             </div>
         </header>
 
@@ -28,7 +28,7 @@
                 <form id="mkdir" action="/mkdir" method="post">
                     <input type="hidden" name="path" value="{{ currentdir }}">
                     <input type="text" id="mkdir-input" name="directory" placeholder="New directory...">
-                    <button id="mkdir-submit">Create</button>
+                    <button id="mkdir-submit" class="btn-success">Create</button>
                 </form>
             </div>
 
