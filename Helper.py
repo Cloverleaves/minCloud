@@ -2,7 +2,6 @@
 import math
 
 class Helper(object):
-
     def def_date(time=False):
         """
         Get a datetime object or a int() Epoch timestamp and return a
@@ -41,10 +40,10 @@ class Helper(object):
         if day_diff < 7:
             return str(day_diff) + " days ago"
         if day_diff < 31:
-            return str(day_diff / 7) + " weeks ago"
+            return str(math.floor(day_diff / 7)) + " weeks ago"
         if day_diff < 365:
-            return str(day_diff / 30) + " months ago"
-        return str(day_diff / 365) + " years ago"
+            return str(math.floor(day_diff / 30)) + " months ago"
+        return str(math.floor(day_diff / 365)) + " years ago"
 
     def def_extension(extension):
         """Determine if particular icon is available."""
